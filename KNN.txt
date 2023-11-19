@@ -1,0 +1,43 @@
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn import metrics
+
+df = pd.read_csv('diabetes.csv')
+
+X = df.drop('Outcome',axis=1)
+y = df['Outcome']
+
+X_train,X_test,y_train,y_test =train_test_split(X,y, test_size=0.2,random_state=0)
+
+scaler =StandardScaler()
+X_train = scaler.fit_transform(X_train)
+X_test = scaler.transform(X_test)
+
+knn = KNeighborsClassifier(n_neighbors=5)
+knn.fit(X_train,y_train)
+
+y_pred = knn.predict(X_test)
+
+print("Confusion Matrix:")
+print(confusion_matrix(y_test,y_pred))
+
+accuracy = accuracy_score(y_test,y_pred)
+print("accuracy: ",accuracy)
+
+error_rate = 1 - accuracy
+print("Error Rate: ",error_rate)
+
+print("Precision ",precision_score(y_test,y_pred))
+
+print("Recall ",recall_score(y_test,y_pred))
+
+confusion_matrix = metrics.confusion_matrix(y_test,y_pred)
+
+cm_display = metrics.ConfusionMatrixDisplay(confusion_matrix = confusion_matrix, display_labels = [False,True])
+
+cm_display.plot()
+plt.show()
